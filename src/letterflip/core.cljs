@@ -54,13 +54,14 @@ which is mostly a true book, with some stretchers, as I said before.")
     (defn trigger-transition
       []
       (reset! counter 0)
-      (js/setInterval #(if (> 5 @counter)
-                         (do
-                           (swap! letter next-letter)
-                           (swap! counter inc)
-                           (reset! bold true))
-                         (do (reset! letter initial-letter)
-                             (reset! bold false))) 500))
+      (let [interval-id (js/setInterval #(if (> 5 @counter)
+                               (do
+                                 (swap! letter next-letter)
+                                 (swap! counter inc)
+                                 (reset! bold true))
+                               (do (reset! letter initial-letter)
+                                   (reset! bold false))) 500) ]
+        (js/setTimeout #(js/clearInterval interval-id) 10000)))
     (fn []
       [:span
        {:on-mouse-over trigger-transition
